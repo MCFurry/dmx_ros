@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dmx_ros</name>
+  <version>0.0.1</version>
+  <description>The dmx_ros-driver package</description>
+
+  <maintainer email="ecorbe@gmail.com">Ernesto Corbellini</maintainer>
+  <author email="ferry.schoenmakers@nobleo.nl">Tim Clephas</author>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <depend>message_runtime</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+
+</package>

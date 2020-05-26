@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import array
 import serial
 import termios
 import fcntl
@@ -24,8 +25,8 @@ class DmxDriver:
         self.dmx_frame = [0] * 512
 
         self.services = [
-            rospy.Service("set_channel", SetChannel, self.set_channel_srv_cb),
-            rospy.Service("get_channel", GetChannel, self.get_channel_srv_cb)
+            rospy.Service("~set_channel", SetChannel, self.set_channel_srv_cb),
+            rospy.Service("~get_channel", GetChannel, self.get_channel_srv_cb)
         ]
         rospy.Timer(rospy.Duration(1.0/self.rate), self.send_frame)
 
@@ -35,37 +36,31 @@ class DmxDriver:
         self.serial_device.close()
 
     def set_channel_srv_cb(self, req):
-        self.set_channel(req.channel, req.value)
-        return SetChannelResponse()
+        # Python treats unit8[] as bytes, hence convert them that way
+        # http://wiki.ros.org/msg#Fields
+        values = array.array('B', req.value)
+        if len(req.channel) == len(values):
+            for channel, value in zip(req.channel, values):
+                if channel >= 0 and channel < 512:
+                    self.dmx_frame[channel] = value
+                else:
+                    rospy.logerr("set_channel(): channel {} out of bounds!".format(channel))
+                    return SetChannelResponse(success=False)
+            return SetChannelResponse(success=True)
+        else:
+            rospy.logerr("Number of channels should be the same as number of values!")
+            return SetChannelResponse(success=False)
 
     def get_channel_srv_cb(self, req):
         resp = GetChannelResponse()
-        resp.value = self.get_channel(req.channel)
+        resp.success = True
+        for channel in req.channel:
+            if channel >= 0 and channel < 512:
+                resp.value += chr(self.dmx_frame[channel])
+            else:
+                rospy.logerr("get_channel(): channel {} out of bounds!".format(channel))
+                resp.success = False
         return resp
-
-    def set_channel(self, channel, value):
-        """
-        Set a channel to a specific value.
-        :param channel: A channel value in the range [0; 511]
-        :param value: A value in the range [0; 255]
-        :return: None
-        """
-        if channel >= 0 and channel < 512:
-            self.dmx_frame[channel] = value
-        else:
-            rospy.logerr("set_channel(): channel {} out of bounds!".format(channel))
-
-    def get_channel(self, channel):
-        """
-        Get the current value of a channel.
-        :param channel: A channel value in the range [0; 511]
-        :return: 8 bit value for that channel
-        """
-        if channel >= 0 and channel < 512:
-            return self.dmx_frame[channel]
-        else:
-            rospy.logerr("get_channel(): channel {} out of bounds!".format(channel))
-            return None
 
     def send_frame(self, event):
         """

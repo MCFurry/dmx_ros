@@ -1,3 +1,4 @@
-uint16 channel
+uint16[] channel
 ---
-uint8 value
+bool success
+uint8[] value

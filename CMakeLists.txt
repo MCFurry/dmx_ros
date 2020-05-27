@@ -11,13 +11,28 @@ find_package(catkin REQUIRED
 
 catkin_python_setup()
 
+add_message_files(
+  DIRECTORY msg
+  FILES
+    Dmx.msg
+)
+
 add_service_files(DIRECTORY srv
   FILES
     GetChannel.srv
     SetChannel.srv
 )
 
-generate_messages(DEPENDENCIES std_msgs)
+generate_messages(
+  DEPENDENCIES
+    std_msgs
+)
+
+catkin_package(
+  CATKIN_DEPENDS
+    message_runtime
+    std_msgs
+)
 
 install(PROGRAMS
   src/driver.py

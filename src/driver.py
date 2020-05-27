@@ -6,11 +6,13 @@ import termios
 import fcntl
 import time
 import rospy
+from dmx_ros.msg import Dmx
 from dmx_ros.srv import SetChannel, SetChannelResponse, GetChannel, GetChannelResponse
 
 
 class DmxDriver:
     def __init__(self):
+        # Initialize serial port
         self.com_port = rospy.get_param('~com_port', '/dev/ttyUSB0')
         self.rate = rospy.get_param('~rate', 50)
         self.BAUD_RATE = 250000
@@ -19,21 +21,35 @@ class DmxDriver:
         except serial.SerialException, e:
             rospy.logerr(str(e))
             rospy.signal_shutdown(str(e))
-
+        # Initialize DMX frame
         self.TIOCSBRK = getattr(termios, 'TIOCSBRK', 0x5427)
         self.TIOCCBRK = getattr(termios, 'TIOCCBRK', 0x5428)
         self.dmx_frame = [0] * 512
 
+        # Setup subscribers and services
+        rospy.Subscriber("dmx_tx", Dmx, self.dmx_msg_cb)
         self.services = [
             rospy.Service("~set_channel", SetChannel, self.set_channel_srv_cb),
             rospy.Service("~get_channel", GetChannel, self.get_channel_srv_cb)
         ]
+
         rospy.Timer(rospy.Duration(1.0/self.rate), self.send_frame)
 
         rospy.spin()
 
     def __del__(self):
         self.serial_device.close()
+
+    def dmx_msg_cb(self, msg):
+        values = array.array('B', msg.value)
+        if len(msg.channel) == len(values):
+            for channel, value in zip(msg.channel, values):
+                if channel >= 0 and channel < 512:
+                    self.dmx_frame[channel] = value
+                else:
+                    rospy.logerr("set_channel(): channel {} out of bounds!".format(channel))
+        else:
+            rospy.logerr("Number of channels should be the same as number of values!")
 
     def set_channel_srv_cb(self, req):
         # Python treats unit8[] as bytes, hence convert them that way

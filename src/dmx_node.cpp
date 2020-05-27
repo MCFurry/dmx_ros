@@ -1,4 +1,4 @@
-#include "dmx485_lib/dmx485.h"
+#include <dmx_ros/dmx_node.hpp>
 
 namespace dmx_node
 {

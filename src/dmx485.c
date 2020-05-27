@@ -17,7 +17,7 @@
 #include <linux/serial.h>
 #include <time.h>
 
-#include "dmx485.h"
+#include "dmx_ros/dmx485.h"
 
 #define DEFAULT_CHANNELS_TO_SEND	32	// Number of channels to send per frame
 #define DEFAULT_BRK			176	// Default break time

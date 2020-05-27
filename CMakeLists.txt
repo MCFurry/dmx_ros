@@ -13,10 +13,9 @@ find_package(catkin REQUIRED
 # set-up destination variables
 catkin_destinations()
 
-# create directory during CMake build system creation step
-file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION})
-
-add_subdirectory(dmx485_lib)
+#add_subdirectory(dmx485_lib)
+# build library
+add_library(dmx485 src/dmx485.c)
 
 add_message_files(
   DIRECTORY msg

@@ -5,11 +5,18 @@ find_package(catkin REQUIRED
   COMPONENTS
     message_generation
     message_runtime
-    rospy
+    roscpp
+    roslint
     std_msgs
 )
 
-catkin_python_setup()
+# set-up destination variables
+catkin_destinations()
+
+# create directory during CMake build system creation step
+file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+add_subdirectory(dmx485_lib)
 
 add_message_files(
   DIRECTORY msg
@@ -34,7 +41,21 @@ catkin_package(
     std_msgs
 )
 
-install(PROGRAMS
-  src/driver.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+
+# Roslint cpp
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
+roslint_cpp()
+
+add_executable(dmx_node src/dmx_node.cpp)
+add_dependencies(dmx_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dmx_node ${catkin_LIBRARIES})
+
+install(
+  TARGETS
+    dmx_node
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

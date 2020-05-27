@@ -1,0 +1,12 @@
+libdmx485 - "Dumb" RS-485/DMX-512 Interface Library
+Copyright (C)2009-2010 Mike Bourgeous of Nitrogen Logic
+Licensed under LGPL v2.1 or later
+
+This library provides a simple interface for controlling DMX-512 lighting
+systems using standard RS-485 and "dumb" USB-to-DMX adapters (such as the Enttec
+OpenDMX USB based on the FTDI chipset).  Any RS-485 adapter that supports a baud
+rate between 248756 and 255102 bps should work (an exact rate of 250000 bps is
+desired, but the DMX-512 specification allows for some deviation).
+
+The above license and copyright notice apply to all files, unless otherwise
+stated in the file in question, the AUTHORS file, or in this README.

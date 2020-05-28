@@ -49,7 +49,7 @@ static inline int compare_timespec(struct timespec *a, struct timespec *b)
  * Opens the specified RS-485 device (i.e. /dev/ttyUSB0), initializes it for
  * DMX operation, and returns its file descriptor.  Returns -1 on error.
  */
-dmx_state *dmx_open(char *filename)
+dmx_state *dmx_open(const char *filename)
 {
 	return dmx_open_ex(filename, 0);
 }
@@ -60,7 +60,7 @@ dmx_state *dmx_open(char *filename)
  * Displays no device open error messages if quiet is nonzero (other errors and
  * warnings will still be displayed).
  */
-dmx_state *dmx_open_ex(char *filename, int quiet)
+dmx_state *dmx_open_ex(const char *filename, int quiet)
 {
 	struct serial_struct serinfo;	// Linux-specific serial port settings
 	struct termios terminfo;	// Terminal settings

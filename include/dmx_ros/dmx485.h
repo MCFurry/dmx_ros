@@ -31,7 +31,7 @@ typedef struct {
  * Opens the specified RS-485 device (i.e. /dev/ttyUSB0), initializes it for
  * DMX operation, and returns its file descriptor.  Returns -1 on error.
  */
-dmx_state *dmx_open(char *filename);
+dmx_state *dmx_open(const char *filename);
 
 /*
  * Opens the specified RS-485 device (i.e. /dev/ttyUSB0), initializes it for
@@ -39,7 +39,7 @@ dmx_state *dmx_open(char *filename);
  * Displays no device open error messages if quiet is nonzero (other errors and
  * warnings will still be displayed).
  */
-dmx_state *dmx_open_ex(char *filename, int quiet);
+dmx_state *dmx_open_ex(const char *filename, int quiet);
 
 /*
  * Closes the previously-opened DMX device and frees associated state.

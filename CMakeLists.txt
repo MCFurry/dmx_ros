@@ -13,7 +13,6 @@ find_package(catkin REQUIRED
 # set-up destination variables
 catkin_destinations()
 
-#add_subdirectory(dmx485_lib)
 # build library
 add_library(dmx485 src/dmx485.c)
 
@@ -52,6 +51,7 @@ roslint_cpp()
 add_executable(dmx_node src/dmx_node.cpp)
 add_dependencies(dmx_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(dmx_node ${catkin_LIBRARIES})
+target_link_libraries(dmx_node dmx485)
 
 install(
   TARGETS

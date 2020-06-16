@@ -23,7 +23,7 @@ DmxNode::DmxNode(ros::NodeHandle& nh_priv, ros::NodeHandle& nh_global)
   getChanService = nh_priv_.advertiseService("get_channel", &DmxNode::getChanCB, this);
 
   /* ROS subscribe topics */
-  dmxSubscriber = nh_priv_.subscribe<dmx_ros::Dmx>("dmx_tx", 1, &DmxNode::dmxMsgCb, this);
+  dmxSubscriber = nh_global.subscribe<dmx_ros::Dmx>("dmx_tx", 1, &DmxNode::dmxMsgCb, this);
 
   ROS_INFO_STREAM("Successfully launched " << ros::this_node::getName());
 }

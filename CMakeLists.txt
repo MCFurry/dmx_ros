@@ -10,11 +10,7 @@ find_package(catkin REQUIRED
     std_msgs
 )
 
-# set-up destination variables
-catkin_destinations()
-
-add_message_files(
-  DIRECTORY msg
+add_message_files(DIRECTORY msg
   FILES
     Dmx.msg
 )
@@ -46,13 +42,11 @@ include_directories(
 set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
 roslint_cpp()
 
-# build library
-add_library(dmx485 src/dmx485.c)
 
 add_executable(dmx_node src/dmx_node.cpp)
+add_library(dmx485 src/dmx485.c)
 add_dependencies(dmx_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(dmx_node ${catkin_LIBRARIES})
-target_link_libraries(dmx_node dmx485)
+target_link_libraries(dmx_node ${catkin_LIBRARIES} dmx485)
 
 install(
   TARGETS

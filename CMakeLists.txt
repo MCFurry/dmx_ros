@@ -42,8 +42,6 @@ include_directories(
 set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")
 roslint_cpp()
 
-# Roslint everything ending on .py
-roslint_python()
 
 add_executable(dmx_node src/dmx_node.cpp)
 add_library(dmx485 src/dmx485.c)
